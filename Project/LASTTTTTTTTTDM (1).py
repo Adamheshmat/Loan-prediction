@@ -16,7 +16,7 @@ from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-Data_set=pd.read_csv("Train data.csv")
+Data_set=pd.read_csv("Project/Train data.csv")
 # Remove Loan_ID because it's not a predictive feature
 if 'Loan_ID' in Data_set.columns:
     Data_set.drop(columns=['Loan_ID'], inplace=True)
