@@ -17,7 +17,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 Data_set=pd.read_csv("Project/Train data.csv")
-# Remove Loan_ID because it's not a predictive feature
+
 if 'Loan_ID' in Data_set.columns:
     Data_set.drop(columns=['Loan_ID'], inplace=True)
 
@@ -167,17 +167,15 @@ pd.set_option('display.float_format', '{:.6f}'.format)
 print(target_corr)
 pd.reset_option('display.float_format')
 
-# ==========================
-# SAVE FINAL CLEANED DATASET
-# ==========================
+ 
 
-# Make sure Loan_Status is numeric (required for models)
+
 Data_set['Loan_Status'] = Data_set['Loan_Status'].astype(int)
 
-# Reset index after outlier removal
+
 Data_set = Data_set.reset_index(drop=True)
 
-# Save cleaned file
+
 Data_set.to_csv("Cleaned_Loan_Train_Data.csv", index=False)
 
 print("\n===============================")

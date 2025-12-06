@@ -11,25 +11,21 @@ from sklearn.preprocessing import LabelEncoder
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# ==========================
-# LOAD DATA
-# ==========================
+ 
 
 Data_set = pd.read_csv("Project/Train data.csv")
 
-# Remove Loan_ID because it's not a predictive feature
+ 
 if 'Loan_ID' in Data_set.columns:
     Data_set.drop(columns=['Loan_ID'], inplace=True)
 
 print(Data_set)
 
-# Ensure Credit_History is treated as categorical early
+
 if 'Credit_History' in Data_set.columns:
     Data_set['Credit_History'] = Data_set['Credit_History'].astype('object')
 
-# ==========================
-# CHECK SKEWNESS OF NUMERIC FEATURES
-# ==========================
+ 
 
 numeric_cols_for_plot = Data_set.select_dtypes(include=np.number).columns.tolist()
 
@@ -46,9 +42,7 @@ for col in numeric_cols_for_plot:
     plt.ylabel('Frequency')
     plt.show()
 
-# ==========================
-# HANDLE MISSING VALUES
-# ==========================
+ 
 
 number_cols = Data_set.select_dtypes(exclude=['object']).columns.tolist()
 df_num = Data_set[number_cols]
@@ -68,17 +62,14 @@ df_cat = pd.DataFrame(imp_mode.fit_transform(df_cat), columns=category_cols)
 print("\nCategorical columns after imputation:")
 print(df_cat.head())
 
-# Put data back together
+ 
 Data_set[number_cols] = df_num
 Data_set[category_cols] = df_cat
 
 print("\nCombined dataset:")
 print(Data_set.head())
 
-# ==========================
-# REMOVE OUTLIERS (NO SCALING USED)
-# ==========================
-
+ 
 def detect_outliers_iqr(df, column):
     Q1 = df[column].quantile(0.25)
     Q3 = df[column].quantile(0.75)
@@ -90,7 +81,7 @@ def detect_outliers_iqr(df, column):
 
 print("\n=== OUTLIER DETECTION RESULTS ===")
 
-skip_cols = ['Loan_Amount_Term']  # Avoid removing too many rows
+skip_cols = ['Loan_Amount_Term']   
 
 initial_shape = Data_set.shape
 print("Shape before outlier removal:", initial_shape)
@@ -114,14 +105,12 @@ for col in number_cols:
 
 print("\nShape after outlier removal:", Data_set.shape)
 
-# ==========================
-# ENCODING
-# ==========================
+ 
 
 cat_cols = Data_set.select_dtypes(include=['object']).columns.tolist()
 print("\nCategorical columns before encoding:", cat_cols)
 
-# Convert "3+" to integer for Dependents
+ 
 if 'Dependents' in Data_set.columns:
     Data_set['Dependents'] = Data_set['Dependents'].replace('3+', 3)
     Data_set['Dependents'] = pd.to_numeric(Data_set['Dependents'], errors='coerce')
@@ -133,7 +122,7 @@ for col in binary_cols:
     if col in Data_set.columns:
         Data_set[col] = le.fit_transform(Data_set[col])
 
-# One-Hot encoding for multi-category
+ 
 Data_set = pd.get_dummies(Data_set, columns=['Property_Area'], drop_first=True)
 
 print("\nEncoding complete!")
@@ -143,9 +132,7 @@ for col in ['Property_Area_Semiurban', 'Property_Area_Urban']:
     if col in Data_set.columns:
         Data_set[col] = Data_set[col].astype(int)
 
-# ==========================
-# CORRELATION HEATMAP
-# ==========================
+ 
 
 corr_matrix = Data_set.select_dtypes(include=['number']).corr()
 
@@ -157,10 +144,7 @@ plt.show()
 target_corr = corr_matrix['Loan_Status'].sort_values(ascending=False)
 print("Correlation with Loan_Status:")
 print(target_corr)
-
-# ==========================
-# SAVE FINAL CLEANED DATASET
-# ==========================
+ 
 
 Data_set['Loan_Status'] = Data_set['Loan_Status'].astype(int)
 Data_set = Data_set.reset_index(drop=True)

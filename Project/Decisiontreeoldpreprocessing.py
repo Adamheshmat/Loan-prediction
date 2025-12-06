@@ -161,53 +161,42 @@ graph.render("decision_tree_full", format="png", cleanup=True)
 
 
 
-
-# ==========================================================
-# PREDICTIONS ON NEW CUSTOMERS (100% consistent preprocessing)
-# ==========================================================
-
-# ==========================================================
-# PREDICTIONS ON NEW CUSTOMERS (without modifying original CSV)
-# ==========================================================
-
-# Load cleaned new customer data
+ 
+ 
 new_df_original = pd.read_csv("Project/Cleaned_New_Customer.csv")
 
-# Copy for model prediction (this one gets binned)
+ 
 new_df_model = new_df_original.copy()
 
-# Ensure exact same columns and order
+ 
 missing_cols = set(X_train_orig.columns) - set(new_df_model.columns)
 for col in missing_cols:
     new_df_model[col] = 0  
 
 new_df_model = new_df_model[X_train_orig.columns]
 
-# Apply SAME kbins ONLY to the model copy
+ 
 new_df_model[num_cols] = kbins.transform(new_df_model[num_cols])
 
-# Make sure all categorical/one-hot columns are integers
+ 
 cat_cols = new_df_model.select_dtypes(include=['object', 'bool']).columns
 for col in cat_cols:
     new_df_model[col] = new_df_model[col].astype(int)
-
-# Predict using model copy
+ 
 predictions = best_tree.predict(new_df_model)
 
-# Add predictions to ORIGINAL unbinned dataset
+ 
 new_df_original["Predicted_Loan_Status"] = predictions
 
-# Save final output (clean data + prediction, NO bins)
+ 
 output_path = "Project/New_Customer_Predicted.csv"
 new_df_original.to_csv(output_path, index=False)
 
 print(f"\nPredictions saved to: {output_path}")
 print(new_df_original.head())
 print(new_df_original['Predicted_Loan_Status'].value_counts())
+ 
 
-# ==========================================================
-# SAVE VERSION WITH BINS (the exact model_input values)
-# ==========================================================
 binned_output = new_df_model.copy()
 binned_output["Predicted_Loan_Status"] = predictions
 
@@ -222,10 +211,7 @@ print("Preview:")
 print(binned_output.head())
 print("====================================================")
 
-
-# ==========================================================
-# REQUIRED PERCENTAGE CALCULATION
-# ==========================================================
+ 
 
 subset = new_df_original[
     (new_df_original["Married"] != 0) &
@@ -243,10 +229,7 @@ print(f"Total customers (Married + Semiurban): {total}")
 print(f"Predicted Approved                  : {approved}")
 print(f"Approval Percentage                : {percentage:.2f}%")
 print("-"*60)
-
-# ==========================================================
-# VISUALIZATIONS
-# ==========================================================
+ 
 
 plt.figure(figsize=(6, 4))
 sns.countplot(x="Predicted_Loan_Status", data=new_df_original, palette="Blues")
