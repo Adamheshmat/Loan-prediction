@@ -100,18 +100,16 @@ print("\nTRAIN ACC:", accuracy_score(y_train, best_tree.predict(X_train)))
 print("TEST ACC:", accuracy_score(y_test, y_pred))
 print("\nCLASSIFICATION REPORT:\n", classification_report(y_test, y_pred))
 print("CONFUSION MATRIX:\n", confusion_matrix(y_test, y_pred))
-# ===========================================
-# CONFUSION MATRIX PLOT WITH METRICS (NO RECALCULATION)
-# ===========================================
+ 
 cm = confusion_matrix(y_test, y_pred)
 
-# Metrics using already computed predictions
+
 accuracy = accuracy_score(y_test, y_pred)
 precision = precision_score(y_test, y_pred)
-sensitivity = recall_score(y_test, y_pred)   # recall for class 1
+sensitivity = recall_score(y_test, y_pred)   
 
 tn, fp, fn, tp = cm.ravel()
-specificity = tn / (tn + fp)                 # recall for class 0
+specificity = tn / (tn + fp)                 \
 
 plt.figure(figsize=(8, 6))
 sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
