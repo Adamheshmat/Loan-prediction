@@ -24,6 +24,11 @@ nb_model.fit(X_train, y_train)
 
 y_pred = nb_model.predict(X_test)
 
+y_train_pred = nb_model.predict(X_train)
+train_accuracy = accuracy_score(y_train, y_train_pred)
+print("Train Accuracy:", train_accuracy)
+
+
 tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
 
 accuracy = accuracy_score(y_test, y_pred)
