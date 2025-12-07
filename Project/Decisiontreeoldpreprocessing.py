@@ -39,7 +39,7 @@ bin_results = {}
 
 for n_bins in bin_options:
     try:
-        kb = KBinsDiscretizer(n_bins=n_bins, encode="ordinal", strategy="quantile")
+        kb = KBinsDiscretizer(n_bins=n_bins, encode="ordinal", strategy="uniform")
 
         X_train = X_train_orig.copy()
         X_test = X_test_orig.copy()
